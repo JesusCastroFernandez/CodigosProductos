@@ -1,0 +1,61 @@
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Productos {
+
+    public static void main(String[] args) {
+        String[] productos = {"SP1234A", "aM5544I", "AO5925N", "O26232A", "AT5425G",
+            "SM4285J", "sp1599A", "SP12341B", "SP111C"};
+
+        int totalValidos = 0;
+        int totalControlValido = 0;
+        int totalAgotados = 0;
+        int totalEnStock = 0;
+        int totalMóviles = 0;
+        int totalTablets = 0;
+        int totalPortátiles = 0;
+
+        Pattern pattern = Pattern.compile("^(s|S|a|A)(t|T|p|P|m|M)(\\d{4})([a-jA-J])$");
+
+        for (String producto : productos) {
+            Matcher matcher = pattern.matcher(producto);
+            if (matcher.matches()) {
+                totalValidos++;
+                char disponibilidad = matcher.group(1).toUpperCase().charAt(0);
+                char tipo = matcher.group(2).toUpperCase().charAt(0);
+                int codigo = Integer.parseInt(matcher.group(3));
+                char control = matcher.group(4).toUpperCase().charAt(0);
+                char controlCalculado = (char) ('A' + (codigo % 10));
+
+                if (control == controlCalculado) {
+                    totalControlValido++;
+                }
+
+                if (disponibilidad == 'A') {
+                    totalAgotados++;
+                } else {
+                    totalEnStock++;
+                }
+
+                switch (tipo) {
+                    case 'M':
+                        totalMóviles++;
+                        break;
+                    case 'T':
+                        totalTablets++;
+                        break;
+                    case 'P':
+                        totalPortátiles++;
+                        break;
+                }
+            }
+        }
+
+        int totalInvalidos = productos.length - totalValidos;
+
+        System.out.println("Total de productos: " + productos.length);
+        System.out.println("Total de productos válidos: " + totalValidos);
+        System.out.println("Total de productos inválidos: " + totalInvalidos);
+        System.out.println("Total de productos con código de control válido: " + totalControlValido);
+        System.out.println("Total de productos agotados: " + totalAgotados);
+        System.out
